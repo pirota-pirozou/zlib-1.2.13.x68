@@ -51,19 +51,21 @@ HAS = $(RUN68) ${XDEV68K_DIR}/x68k_bin/HAS060.X
 GLK = $(RUN68) ${XDEV68K_DIR}/x68k_bin/g2lk.x
 HLK = $(RUN68) ${XDEV68K_DIR}/x68k_bin/hlk301.x
 
-AR = $(RUN68) ${XDEV68K_DIR}/x68k_bin/ar.x
+# AR = $(RUN68) ${XDEV68K_DIR}/x68k_bin/ar.x
+AR = $(RUN68) ${XDEV68K_DIR}/x68k_bin/lib.x
 ARFLAGS =
 
 STRIP = $(RUN68) ${XDEV68K_DIR}/x68k_bin/strip.x
 
 # 最終生成物
-STATICLIB = libz.a
+#STATICLIB = libz.a
+STATICLIB = libz.l
 
 # ヘッダ検索パス
 INCLUDE_FLAGS = -I${XDEV68K_DIR}/include/xc -I${XDEV68K_DIR}/include/xdev68k
 
 # コンパイルフラグ
-COMMON_FLAGS = -m$(CPU) -O3 $(INCLUDE_FLAGS) -DGCC_MARIKO
+COMMON_FLAGS = -m$(CPU) -Os $(INCLUDE_FLAGS) -DGCC_MARIKO
 CFLAGS = $(COMMON_FLAGS) -Wno-builtin-declaration-mismatch -fcall-used-d2 -fcall-used-a2 -finput-charset=cp932 -fexec-charset=cp932 -fverbose-asm
 CXXFLAGS = $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
 
@@ -132,9 +134,10 @@ $(STATICLIB) : $(OBJS)
 #	HLK に長いパス文字を与えることは難しい。
 #	回避策としてリンク対象ファイルを $(INTERMEDIATE_DIR) 以下にコピーし、
 #	短い相対パスを用いてリンクを実行させる。
-$(EXE1) : $(STATICLIB) $(LIBS)
+$(EXE1) : ./test/example.o $(STATICLIB) $(LIBS)
 	mkdir -p $(INTERMEDIATE_DIR)
-	rm -f $(HLK_LINK_LIST)
+#	rm -f $(HLK_LINK_LIST)
+	echo ./test/example.o > $(HLK_LINK_LIST)
 	@for FILENAME in $(STATICLIB); do\
 		echo $$FILENAME >> $(HLK_LINK_LIST); \
 	done
@@ -144,9 +147,10 @@ $(EXE1) : $(STATICLIB) $(LIBS)
 	done
 	$(HLK) -i $(HLK_LINK_LIST) -o $(EXE1)
 
-$(EXE2) : $(STATICLIB) $(LIBS)
+$(EXE2) : ./test/minigzip.o $(STATICLIB) $(LIBS)
 	mkdir -p $(INTERMEDIATE_DIR)
-	rm -f $(HLK_LINK_LIST)
+#	rm -f $(HLK_LINK_LIST)
+	echo ./test/minigzip.o > $(HLK_LINK_LIST)
 	@for FILENAME in $(STATICLIB); do\
 		echo $$FILENAME >> $(HLK_LINK_LIST); \
 	done
