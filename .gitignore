@@ -3,6 +3,7 @@
 bin/
 obj/
 _build/
+build/
 *.vcxproj.user
 
 .DS_Store
