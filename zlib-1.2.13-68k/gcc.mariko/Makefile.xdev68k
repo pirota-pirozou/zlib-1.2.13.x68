@@ -102,6 +102,8 @@ DEPS =	$(addprefix $(INTERMEDIATE_DIR)/,$(patsubst %.c,%.d,$(C_SRCS))) \
 
 # HLK に入力するリンクリスト
 HLK_LINK_LIST = $(INTERMEDIATE_DIR)/_lk_list.tmp
+HLK_LINK_LIST1 = $(INTERMEDIATE_DIR)/_lk_list1.tmp
+HLK_LINK_LIST2 = $(INTERMEDIATE_DIR)/_lk_list2.tmp
 
 EXE1 = example.X
 EXE2 = minigzip.X
@@ -136,29 +138,29 @@ $(STATICLIB) : $(OBJS)
 #	短い相対パスを用いてリンクを実行させる。
 $(EXE1) : ./test/example.o $(STATICLIB) $(LIBS)
 	mkdir -p $(INTERMEDIATE_DIR)
-#	rm -f $(HLK_LINK_LIST)
-	echo ./test/example.o > $(HLK_LINK_LIST)
+#	rm -f $(HLK_LINK_LIST1)
+	echo ./test/example.o > $(HLK_LINK_LIST1)
 	@for FILENAME in $(STATICLIB); do\
-		echo $$FILENAME >> $(HLK_LINK_LIST); \
+		echo $$FILENAME >> $(HLK_LINK_LIST1); \
 	done
 	@for FILENAME in $(LIBS); do\
 		cp $$FILENAME $(INTERMEDIATE_DIR)/`basename $$FILENAME`; \
-		echo $(INTERMEDIATE_DIR)/`basename $$FILENAME` >> $(HLK_LINK_LIST); \
+		echo $(INTERMEDIATE_DIR)/`basename $$FILENAME` >> $(HLK_LINK_LIST1); \
 	done
-	$(HLK) -i $(HLK_LINK_LIST) -o $(EXE1)
+	$(HLK) -i $(HLK_LINK_LIST1) -o $(EXE1)
 
 $(EXE2) : ./test/minigzip.o $(STATICLIB) $(LIBS)
 	mkdir -p $(INTERMEDIATE_DIR)
-#	rm -f $(HLK_LINK_LIST)
-	echo ./test/minigzip.o > $(HLK_LINK_LIST)
+#	rm -f $(HLK_LINK_LIST2)
+	echo ./test/minigzip.o > $(HLK_LINK_LIST2)
 	@for FILENAME in $(STATICLIB); do\
-		echo $$FILENAME >> $(HLK_LINK_LIST); \
+		echo $$FILENAME >> $(HLK_LINK_LIST2); \
 	done
 	@for FILENAME in $(LIBS); do\
 		cp $$FILENAME $(INTERMEDIATE_DIR)/`basename $$FILENAME`; \
-		echo $(INTERMEDIATE_DIR)/`basename $$FILENAME` >> $(HLK_LINK_LIST); \
+		echo $(INTERMEDIATE_DIR)/`basename $$FILENAME` >> $(HLK_LINK_LIST2); \
 	done
-	$(HLK) -i $(HLK_LINK_LIST) -o $(EXE2)
+	$(HLK) -i $(HLK_LINK_LIST2) -o $(EXE2)
 
 # *.c ソースのコンパイル
 %.o : %.c Makefile.xdev68k
